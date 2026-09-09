@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(*.agda)",
+      "Edit(*.agda)",
+      "Write(*.agda)"
+    ]
+  }
+}
