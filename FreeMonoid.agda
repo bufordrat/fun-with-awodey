@@ -3,7 +3,6 @@ module FreeMonoid where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq
 open Eq.≡-Reasoning
-open import Agda.Builtin.Sigma
 
 record Monoid (A : Set) : Set where
   field
@@ -29,8 +28,23 @@ data List (A : Set) : Set where
 
 _*_ : { A : Set } → List A -> List A -> List A
 — * second = second
-first * — = first
 (x :: xs) * second = x :: (xs * second)
 
-mkFreeMonoid : { A : Set } → Monoid (List A)
-mkFreeMonoid a = {!!}
+generate : { A : Set } → Monoid (List A)
+generate { A } =
+  record { _·_ = _*_ ;
+           𝟙 = — ;
+           ·-assoc = {!!} ;
+           left-id = {!!} ;
+           right-id = {!!} }
+
+-- use second branch of _*_ definition to do this equational reasoning:
+
+-- ((h :: t) * y) * z
+-- (h :: (t * y)) * z
+-- h :: ((t * y) * z)
+
+-- ...?...
+
+-- h :: (t * (y * z))
+-- (h :: t) * (y * z)
