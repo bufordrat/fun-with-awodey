@@ -8,7 +8,7 @@ record Monoid (A : Set) : Set where
   field
     _·_ : A → A → A
     𝟙 : A
-    ·-assoc : ∀ { a b c : A } → ((a · b) · c) ≡ (a · (b · c))
+    ·-assoc : ∀ { a b c : A } → (a · b) · c ≡ a · (b · c)
     left-id : ∀ { a : A } → 𝟙 · a ≡ a
     right-id : ∀ { a : A } → a · 𝟙 ≡ a
 
@@ -35,8 +35,33 @@ generate { A } =
   record { _·_ = _*_ ;
            𝟙 = — ;
            ·-assoc = {!!} ;
-           left-id = {!!} ;
-           right-id = {!!} }
+           left-id = refl ;
+           right-id = *-satisfies-right-id 
+         }
+  where
+    *-satisfies-right-id : { a : List A } → (a * —) ≡ a
+    *-satisfies-right-id { — } = {!!}
+    *-satisfies-right-id { x :: xs } =
+      begin
+        (x :: xs) * —
+      ≡⟨ refl ⟩
+        x :: (xs * —)
+      ≡⟨ {!!} ⟩
+        x :: xs
+      ∎
+
+-- this doesn't build
+
+-- *-is-assoc : { A : Set } →
+--              { a b c : List A } →
+--              (a * b) * c ≡ a * (b * c)
+-- *-is-assoc { a } { b } { c } =
+--   begin_
+--     (a * b) * c
+--   ≡⟨ ? ⟩
+--      a * (b * c)
+--   ∎
+
 
 -- use second branch of _*_ definition to do this equational reasoning:
 
