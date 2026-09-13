@@ -4,6 +4,13 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq
 open Eq.≡-Reasoning
 
+-- there's a thing where you can make all those implicit foralls for
+-- one using "private" syntax; figure out how to do that
+
+-- you might need to do in within the definition of the record type
+
+-- private
+
 record Monoid (A : Set) : Set where
   field
     _·_ : A → A → A
@@ -40,13 +47,13 @@ generate { A } =
          }
   where
     *-satisfies-right-id : { a : List A } → (a * —) ≡ a
-    *-satisfies-right-id { — } = {!!}
+    *-satisfies-right-id { — } = refl
     *-satisfies-right-id { x :: xs } =
       begin
         (x :: xs) * —
       ≡⟨ refl ⟩
         x :: (xs * —)
-      ≡⟨ {!!} ⟩
+      ≡⟨ cong (x ::_) *-satisfies-right-id ⟩
         x :: xs
       ∎
 
