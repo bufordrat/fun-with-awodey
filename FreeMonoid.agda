@@ -47,7 +47,7 @@ generate A =
          }
   where
     *-is-assoc : (a b c : List A) → ((a * b) * c) ≡ (a * (b * c))
-    *-is-assoc = {!!}
+    *-is-assoc _ _ _ = {!!}
 
     *-satisfies-right-id : { a : List A } → (a * —) ≡ a
     *-satisfies-right-id { — } = refl
@@ -59,27 +59,3 @@ generate A =
       ≡⟨ cong (x ::_) *-satisfies-right-id ⟩
         x :: xs
       ∎
-
--- this doesn't build
-
--- *-is-assoc : { A : Set } →
---              { a b c : List A } →
---              (a * b) * c ≡ a * (b * c)
--- *-is-assoc { a } { b } { c } =
---   begin_
---     (a * b) * c
---   ≡⟨ ? ⟩
---      a * (b * c)
---   ∎
-
-
--- use second branch of _*_ definition to do this equational reasoning:
-
--- ((h :: t) * y) * z
--- (h :: (t * y)) * z
--- h :: ((t * y) * z)
-
--- ...?...
-
--- h :: (t * (y * z))
--- (h :: t) * (y * z)
