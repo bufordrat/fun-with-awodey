@@ -17,7 +17,7 @@ record Monoid (A : Set) : Set where
     𝟙 : A
     ·-assoc : ∀ (a b c : A) → (a · b) · c ≡ a · (b · c)
     left-id : ∀ (a : A) → 𝟙 · a ≡ a
-    right-id : ∀ { a : A } → a · 𝟙 ≡ a
+    right-id : ∀ (a : A) → a · 𝟙 ≡ a
 
 record MonoidHomomorphism (A : Set) (B : Set) : Set where
   field
@@ -27,7 +27,7 @@ record MonoidHomomorphism (A : Set) (B : Set) : Set where
   open Monoid source renaming (_·_ to _·ₛ_; 𝟙 to 𝟙ₛ)
   open Monoid target renaming (_·_ to _·ₜ_; 𝟙 to 𝟙ₜ)
   field
-    homo : ∀ { a b : A } → h (a ·ₛ b) ≡ h a ·ₜ h b
+    homo : ∀ (a b : A) → h (a ·ₛ b) ≡ h a ·ₜ h b
 
 data List (A : Set) : Set where
   — : List A
@@ -49,13 +49,13 @@ generate A =
     *-is-assoc : (a b c : List A) → ((a * b) * c) ≡ (a * (b * c))
     *-is-assoc _ _ _ = {!!}
 
-    *-satisfies-right-id : { a : List A } → (a * —) ≡ a
-    *-satisfies-right-id { — } = refl
-    *-satisfies-right-id { x :: xs } =
+    *-satisfies-right-id : (a : List A) → (a * —) ≡ a
+    *-satisfies-right-id — = refl
+    *-satisfies-right-id (x :: xs) =
       begin
         (x :: xs) * —
       ≡⟨ refl ⟩
         x :: (xs * —)
-      ≡⟨ cong (x ::_) *-satisfies-right-id ⟩
+      ≡⟨ cong (x ::_) (*-satisfies-right-id xs) ⟩
         x :: xs
       ∎
