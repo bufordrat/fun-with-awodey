@@ -49,8 +49,14 @@ generate A =
            right-id = *-satisfies-right-id 
          }
   where
-    *-is-assoc : (a b c : List A) → ((a * b) * c) ≡ (a * (b * c))
-    *-is-assoc _ _ _ = {!!}
+    *-is-assoc : (a b c : List A) → (a * b) * c ≡ a * (b * c)
+    *-is-assoc — b c = refl
+    *-is-assoc (x :: xs) b c =
+      begin
+        ((x :: xs) * b) * c
+      ≡⟨ {!!} ⟩
+        (x :: xs) * (b * c)
+      ∎
 
     *-satisfies-right-id : (a : List A) → (a * —) ≡ a
     *-satisfies-right-id — = refl
