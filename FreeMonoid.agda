@@ -9,7 +9,10 @@ open Eq.≡-Reasoning
 
 -- you might need to do in within the definition of the record type
 
+
+
 -- private
+
 
 record Monoid (A : Set) : Set where
   field
