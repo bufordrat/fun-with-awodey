@@ -54,7 +54,7 @@ generate A =
     *-is-assoc (x :: xs) b c =
       begin
         ((x :: xs) * b) * c
-      ≡⟨ {!!} ⟩
+      ≡⟨ cong (x ::_) (*-is-assoc xs b c) ⟩
         (x :: xs) * (b * c)
       ∎
 
