@@ -86,4 +86,7 @@ identityMH A Mon =
     h = λ x → x
     _·_ = Monoid._·_ Mon
 
--- forget-satisfies-id : (A : Set) → (M : Monoid A) → 
+forget-satisfies-id : (A : Set) →
+                      (M : Monoid A) →
+                      forget-func A A (identityMH A M) ≡ λ (x : forget-set A M) -> x
+forget-satisfies-id A M = refl
