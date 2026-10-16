@@ -30,7 +30,7 @@ record MonoidHomomorphism (A : Set) (B : Set) : Set where
   open Monoid source renaming (_·_ to _·ₛ_; 𝟙 to 𝟙ₛ)
   open Monoid target renaming (_·_ to _·ₜ_; 𝟙 to 𝟙ₜ)
   field
-    homo : ∀ (a b : A) → h (a ·ₛ b) ≡ h a ·ₜ h b
+    h-is-homo : ∀ (a b : A) → h (a ·ₛ b) ≡ h a ·ₜ h b
 
 data List (A : Set) : Set where
   — : List A
@@ -68,3 +68,22 @@ generate A =
       ≡⟨ cong (x ::_) (*-satisfies-right-id xs) ⟩
         x :: xs
       ∎
+
+forget-set : (A : Set) → (M : Monoid A) → Set
+forget-set A _ = A
+
+forget-func : (A : Set) → (B : Set) → (f : MonoidHomomorphism A B) → A → B
+forget-func A B f = MonoidHomomorphism.h f
+
+identityMH : (A : Set) → Monoid A → MonoidHomomorphism A A
+identityMH A Mon =
+  record { h = h ;
+           source = Mon ;
+           target = Mon ;
+           h-is-homo = λ _ _ → refl
+         }
+  where
+    h = λ x → x
+    _·_ = Monoid._·_ Mon
+
+-- forget-satisfies-id : (A : Set) → (M : Monoid A) → 
