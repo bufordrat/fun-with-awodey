@@ -86,7 +86,23 @@ identityMH A Mon =
     h = λ x → x
     _·_ = Monoid._·_ Mon
 
+compositionMH : (A : Set) →
+                (B : Set) →
+                (C : Set) →
+                (f : MonoidHomomorphism A B) →
+                (g : MonoidHomomorphism B C) →
+                MonoidHomomorphism A C
+compositionMH = {!!}
+
 forget-satisfies-id : (A : Set) →
                       (M : Monoid A) →
                       forget-func A A (identityMH A M) ≡ λ (x : forget-set A M) -> x
 forget-satisfies-id A M = refl
+
+forget-satisfies-comp : (A : Set) →
+                        (B : Set) →
+                        (C : Set) →
+                        (g : MonoidHomomorphism B C) →
+                        (f : MonoidHomomorphism A B) →
+                        Set
+forget-satisfies-comp = {!!}
