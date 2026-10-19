@@ -102,19 +102,31 @@ compositionMH A B C f g =
   where
     fh = MonoidHomomorphism.h f
     gh = MonoidHomomorphism.h g
+    fh-is-homo = MonoidHomomorphism.h-is-homo f
+    gh-is-homo = MonoidHomomorphism.h-is-homo g
     h = gh ∘ fh
     monA = MonoidHomomorphism.source f
+    monB = MonoidHomomorphism.target f
     monC = MonoidHomomorphism.target g
     _·₁_ = Monoid._·_ monA
-    _·₂_ = Monoid._·_ monC
-    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₂ h b
+    _·₂_ = Monoid._·_ monB
+    _·₃_ = Monoid._·_ monC
+    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₃ h b
     h-is-homo a b =
       begin
         h (a ·₁ b)
+      ≡⟨ refl ⟩
+        (gh ∘ fh) (a ·₁ b)
+      ≡⟨ refl ⟩
+        gh (fh (a ·₁ b))
+      ≡⟨ cong (λ x → gh x) (fh-is-homo a b) ⟩
+        gh (fh a ·₂ fh b)
       ≡⟨ {!!} ⟩
-        h a ·₂ h b
+      -- ≡⟨ gh-is-homo (fh a) (fh b) ⟩
+         gh (fh a) ·₃ gh (fh b)
+      ≡⟨ refl ⟩
+        h a ·₃ h b
       ∎
-
 
 forget-satisfies-id : (A : Set) →
                       (M : Monoid A) →
