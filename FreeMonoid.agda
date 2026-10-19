@@ -3,6 +3,7 @@ module FreeMonoid where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq
 open Eq.≡-Reasoning
+open import Function
 
 -- there's a thing where you can make all those implicit foralls for
 -- one using "private" syntax; figure out how to do that
@@ -92,7 +93,28 @@ compositionMH : (A : Set) →
                 (f : MonoidHomomorphism A B) →
                 (g : MonoidHomomorphism B C) →
                 MonoidHomomorphism A C
-compositionMH = {!!}
+compositionMH A B C f g =
+  record { h = h ;
+           source = monA ;
+           target = monC ;
+           h-is-homo = h-is-homo
+         }
+  where
+    fh = MonoidHomomorphism.h f
+    gh = MonoidHomomorphism.h g
+    h = gh ∘ fh
+    monA = MonoidHomomorphism.source f
+    monC = MonoidHomomorphism.target g
+    _·₁_ = Monoid._·_ monA
+    _·₂_ = Monoid._·_ monC
+    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₂ h b
+    h-is-homo a b =
+      begin
+        h (a ·₁ b)
+      ≡⟨ {!!} ⟩
+        h a ·₂ h b
+      ∎
+
 
 forget-satisfies-id : (A : Set) →
                       (M : Monoid A) →
