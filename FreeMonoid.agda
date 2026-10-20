@@ -92,8 +92,9 @@ compositionMH : (A : Set) →
                 (C : Set) →
                 (f : MonoidHomomorphism A B) →
                 (g : MonoidHomomorphism B C) →
+                MonoidHomomorphism.target f ≡ MonoidHomomorphism.source g →
                 MonoidHomomorphism A C
-compositionMH A B C f g =
+compositionMH A B C f g prf =
   record { h = h ;
            source = monA ;
            target = monC ;
@@ -106,12 +107,14 @@ compositionMH A B C f g =
     gh-is-homo = MonoidHomomorphism.h-is-homo g
     h = gh ∘ fh
     monA = MonoidHomomorphism.source f
-    monB = MonoidHomomorphism.target f
+    monB₁ = MonoidHomomorphism.target f
+    monB₂ = MonoidHomomorphism.source g
     monC = MonoidHomomorphism.target g
     _·₁_ = Monoid._·_ monA
-    _·₂_ = Monoid._·_ monB
-    _·₃_ = Monoid._·_ monC
-    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₃ h b
+    _·₂_ = Monoid._·_ monB₁
+    _·₃_ = Monoid._·_ monB₂
+    _·₄_ = Monoid._·_ monC
+    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₄ h b
     h-is-homo a b =
       begin
         h (a ·₁ b)
@@ -121,11 +124,12 @@ compositionMH A B C f g =
         gh (fh (a ·₁ b))
       ≡⟨ cong (λ x → gh x) (fh-is-homo a b) ⟩
         gh (fh a ·₂ fh b)
-      ≡⟨ {!!} ⟩
-      -- ≡⟨ gh-is-homo (fh a) (fh b) ⟩
-         gh (fh a) ·₃ gh (fh b)
+      ≡⟨ cong (λ op → gh ((Monoid._·_ op) (fh a) (fh b))) prf ⟩
+        gh (fh a ·₃ fh b)
+      ≡⟨ gh-is-homo (fh a) (fh b) ⟩
+         gh (fh a) ·₄ gh (fh b)
       ≡⟨ refl ⟩
-        h a ·₃ h b
+        h a ·₄ h b
       ∎
 
 forget-satisfies-id : (A : Set) →
