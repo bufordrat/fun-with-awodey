@@ -119,8 +119,6 @@ compositionMH A B C f g prf =
       begin
         h (a ·₁ b)
       ≡⟨ refl ⟩
-        (gh ∘ fh) (a ·₁ b)
-      ≡⟨ refl ⟩
         gh (fh (a ·₁ b))
       ≡⟨ cong (λ x → gh x) (fh-is-homo a b) ⟩
         gh (fh a ·₂ fh b)
