@@ -87,14 +87,14 @@ identityMH A Mon =
     h = λ x → x
     _·_ = Monoid._·_ Mon
 
-compositionMH : (A : Set) →
-                (B : Set) →
-                (C : Set) →
-                (f : MonoidHomomorphism A B) →
-                (g : MonoidHomomorphism B C) →
-                MonoidHomomorphism.target f ≡ MonoidHomomorphism.source g →
-                MonoidHomomorphism A C
-compositionMH A B C f g prf =
+composeMH : (A : Set) →
+            (B : Set) →
+            (C : Set) →
+            (g : MonoidHomomorphism B C) →
+            (f : MonoidHomomorphism A B) →
+            MonoidHomomorphism.target f ≡ MonoidHomomorphism.source g →
+            MonoidHomomorphism A C
+composeMH A B C g f prf =
   record { h = h ;
            source = monA ;
            target = monC ;
@@ -141,4 +141,6 @@ forget-satisfies-comp : (A : Set) →
                         (g : MonoidHomomorphism B C) →
                         (f : MonoidHomomorphism A B) →
                         Set
+                        -- let _·ₕ_ = composeMH A B C g f ? in
+                        -- forget-func (g ∘ₕ f) ≡ forget-func g ∘ forget-func f
 forget-satisfies-comp = {!!}
