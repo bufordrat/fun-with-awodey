@@ -140,7 +140,7 @@ forget-satisfies-comp : (A : Set) →
                         (C : Set) →
                         (g : MonoidHomomorphism B C) →
                         (f : MonoidHomomorphism A B) →
-                        Set
-                        -- let _·ₕ_ = composeMH A B C g f ? in
-                        -- forget-func (g ∘ₕ f) ≡ forget-func g ∘ forget-func f
+                        (prf : MonoidHomomorphism.target f ≡ MonoidHomomorphism.source g) →
+                        let g∘f = composeMH A B C g f prf in
+                        forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
 forget-satisfies-comp = {!!}
