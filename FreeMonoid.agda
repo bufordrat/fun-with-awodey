@@ -92,7 +92,10 @@ composeMH : (A : Set) →
             (C : Set) →
             (g : MonoidHomomorphism B C) →
             (f : MonoidHomomorphism A B) →
-            MonoidHomomorphism.target f ≡ MonoidHomomorphism.source g →
+            let fₛ = MonoidHomomorphism.target f
+                gₜ = MonoidHomomorphism.source g
+            in
+            fₛ ≡ gₜ →
             MonoidHomomorphism A C
 composeMH A B C g f prf =
   record { h = h ;
@@ -132,7 +135,8 @@ composeMH A B C g f prf =
 
 forget-satisfies-id : (A : Set) →
                       (M : Monoid A) →
-                      forget-func A A (identityMH A M) ≡ λ (x : forget-set A M) -> x
+                      let id_forget = λ (x : forget-set A M) -> x in
+                      forget-func A A (identityMH A M) ≡ id_forget
 forget-satisfies-id A M = refl
 
 forget-satisfies-comp : (A : Set) →
@@ -140,7 +144,22 @@ forget-satisfies-comp : (A : Set) →
                         (C : Set) →
                         (g : MonoidHomomorphism B C) →
                         (f : MonoidHomomorphism A B) →
-                        (prf : MonoidHomomorphism.target f ≡ MonoidHomomorphism.source g) →
+                        let fₜ = MonoidHomomorphism.target f
+                            gₛ = MonoidHomomorphism.source g
+                        in
+                        (prf : fₜ ≡ gₛ) →
                         let g∘f = composeMH A B C g f prf in
                         forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
-forget-satisfies-comp = {!!}
+forget-satisfies-comp A B C g f prf =
+  let fₜ = MonoidHomomorphism.target f
+      gₛ = MonoidHomomorphism.source g
+      g∘f = composeMH A B C g f prf
+      gh = MonoidHomomorphism.h g∘f
+      _·₁_ = Monoid._·_ fₜ
+      _·₂_ = Monoid._·_ gₛ
+  in
+  begin
+    forget-func A C (g∘f)
+  ≡⟨ {!!} ⟩
+    forget-func B C g ∘ forget-func A B f
+  ∎
