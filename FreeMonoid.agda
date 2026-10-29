@@ -168,6 +168,6 @@ forget-satisfies-comp A B C g f prf =
   in
   begin
     forget-func A C (g∘f)
-  ≡⟨ {!!} ⟩
+  ≡⟨ refl ⟩
     forget-func B C g ∘ forget-func A B f
   ∎
