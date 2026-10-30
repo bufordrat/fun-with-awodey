@@ -150,24 +150,5 @@ forget-satisfies-comp : (A : Set) →
                         (prf : monB₁ ≡ monB₂) →
                         let g∘f = composeMH A B C g f prf in
                         forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
-forget-satisfies-comp A B C g f prf =
-  let g∘f = composeMH A B C g f prf
-      gh = MonoidHomomorphism.h g∘f
-      monA₁ = MonoidHomomorphism.source f
-      monA₂ = MonoidHomomorphism.source g∘f
-      monB₁ = MonoidHomomorphism.target f
-      monB₂ = MonoidHomomorphism.source g
-      monC₁ = MonoidHomomorphism.target g
-      monC₂ = MonoidHomomorphism.target g∘f
-      _·₁₁_ = Monoid._·_ monA₁
-      _·₁₂_ = Monoid._·_ monA₂
-      _·₂₁_ = Monoid._·_ monB₁
-      _·₂₂_ = Monoid._·_ monB₂
-      _·₃₁_ = Monoid._·_ monC₁
-      _·₃₂_ = Monoid._·_ monC₂
-  in
-  begin
-    forget-func A C (g∘f)
-  ≡⟨ refl ⟩
-    forget-func B C g ∘ forget-func A B f
-  ∎
+forget-satisfies-comp A B C g f prf = refl
+
