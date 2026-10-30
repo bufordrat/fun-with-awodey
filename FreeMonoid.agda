@@ -156,16 +156,16 @@ record Category (O : Set₁) (Arrow : O → O → Set₀) : Set₁ where
   field
     idₘ : (A : O) → Arrow A A
     _∘ₘ_ : (A B C : O) → Arrow B C → Arrow A B → Arrow A C
-    left-id : (A : O) →
-              (f : Arrow A A) →
-              let idₗ = idₘ A
-                  _∘ₗ_ = _∘ₘ_ A A A
+    left-id : (A B : O) →
+              (f : Arrow A B) →
+              let idₗ = idₘ B
+                  _∘ₗ_ = _∘ₘ_ A B B
               in
               idₗ ∘ₗ f ≡ f
-    right-id : (A : O) →
-               (f : Arrow A A) →
+    right-id : (A B : O) →
+               (f : Arrow A B) →
                let idᵣ = idₘ A
-                   _∘ᵣ_ = _∘ₘ_ A A A
+                   _∘ᵣ_ = _∘ₘ_ A A B
                in
                f ∘ᵣ idᵣ ≡ f
     comp : (A B C D : O) →
