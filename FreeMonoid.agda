@@ -152,3 +152,7 @@ forget-satisfies-comp : (A : Set) →
                         forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
 forget-satisfies-comp A B C g f prf = refl
 
+record Category (O : Set₁) (Cat : O → O → Set₀) : Set₁ where 
+  field
+    idₘ : (A : O) → Cat A A
+    _∘ₘ_ : (A B C : O) → Cat B C → Cat A B → Cat A C
