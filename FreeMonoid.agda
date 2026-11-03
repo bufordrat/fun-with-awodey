@@ -157,3 +157,11 @@ record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where
     comp : {A B C D : Obj} →
            (f : Arrow C D) → (g : Arrow B C) → (h : Arrow A B) →
            (f ∘ₘ g) ∘ₘ h ≡ f ∘ₘ (g ∘ₘ h)
+
+Mon-Arrow : {A B : Set} → {M : Monoid A} → {N : Monoid B} →
+            Σ Set Monoid → Σ Set Monoid →
+            Set
+Mon-Arrow (_ , M) (_ , N) = MonoidHomomorphism M N
+
+Mon : Category (Σ Set Monoid) Mon-Arrow
+Mon = {!!}
