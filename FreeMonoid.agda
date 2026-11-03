@@ -22,7 +22,7 @@ record Monoid (A : Set) : Set where
     right-id : ∀ (a : A) → a · 𝟙 ≡ a
 
 record MonoidHomomorphism
-       (A : Set) (B : Set) (M : Monoid A) (N : Monoid B)
+       {A : Set} {B : Set} (M : Monoid A) (N : Monoid B)
        : Set where
   field
     h : A -> B
@@ -71,31 +71,31 @@ generate A =
 forget-set : Σ Set Monoid → Set
 forget-set (A , _) = A
 
-forget-func : (A : Set) →
-              (B : Set) →
+forget-func : {A : Set} →
+              {B : Set} →
               (M : Monoid A) →
               (N : Monoid B) →
-              (f : MonoidHomomorphism A B M N) →
+              (f : MonoidHomomorphism {A} {B} M N) →
               A → B
-forget-func A B M N f = MonoidHomomorphism.h f
+forget-func {A} {B} M N f = MonoidHomomorphism.h f
 
-identityMH : (A : Set) → (M : Monoid A) → MonoidHomomorphism A A M M
-identityMH A Mon =
+identityMH : {A : Set} → (M : Monoid A) → MonoidHomomorphism {A} {A} M M
+identityMH {A} Mon =
   let identity = λ x → x in
   record { h = identity ;
            h-is-homo = λ _ _ → refl
          }
 
-composeMH : (A : Set) →
-            (B : Set) →
-            (C : Set) →
+composeMH : {A : Set} →
+            {B : Set} →
+            {C : Set} →
             (MA : Monoid A) →
             (MB : Monoid B) →
             (MC : Monoid C) →
-            (g : MonoidHomomorphism B C MB MC) →
-            (f : MonoidHomomorphism A B MA MB) →
-            MonoidHomomorphism A C MA MC
-composeMH A B C MA MB MC g f =
+            (g : MonoidHomomorphism {B} {C} MB MC) →
+            (f : MonoidHomomorphism {A} {B} MA MB) →
+            MonoidHomomorphism {A} {C} MA MC
+composeMH {A} {B} {C} MA MB MC g f =
   record { h = h ;
            h-is-homo = h-is-homo
          }
@@ -122,27 +122,27 @@ composeMH A B C MA MB MC g f =
         h a ·₃ h b
       ∎
 
-forget-satisfies-id : (A : Set) →
+forget-satisfies-id : {A : Set} →
                       (M : Monoid A) →
                       let id_forget = λ (x : forget-set (A , M)) -> x in
-                      forget-func A A M M (identityMH A M) ≡ id_forget
-forget-satisfies-id A M = refl
+                      forget-func {A} {A} M M (identityMH {A} M) ≡ id_forget
+forget-satisfies-id {A} M = refl
 
-forget-satisfies-comp : (A : Set) →
-                        (B : Set) →
-                        (C : Set) →
+forget-satisfies-comp : {A : Set} →
+                        {B : Set} →
+                        {C : Set} →
                         (MA : Monoid A) →
                         (MB : Monoid B) →
                         (MC : Monoid C) →
-                        (g : MonoidHomomorphism B C MB MC) →
-                        (f : MonoidHomomorphism A B MA MB) →
-                        let g∘f = composeMH A B C MA MB MC g f
-                            F₁ = forget-func A C MA MC
-                            F₂ = forget-func B C MB MC
-                            F₃ = forget-func A B MA MB
+                        (g : MonoidHomomorphism {B} {C} MB MC) →
+                        (f : MonoidHomomorphism {A} {B} MA MB) →
+                        let g∘f = composeMH {A} {B} {C} MA MB MC g f
+                            F₁ = forget-func {A} {C} MA MC
+                            F₂ = forget-func {B} {C} MB MC
+                            F₃ = forget-func {A} {B} MA MB
                         in
                         F₁ (g∘f) ≡ F₂ g ∘ F₃ f
-forget-satisfies-comp A B C MA MB MC g f = refl
+forget-satisfies-comp {A} {B} {C} MA MB MC g f = refl
 
 record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where 
   field
