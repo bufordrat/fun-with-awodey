@@ -11,10 +11,7 @@ open import Agda.Builtin.Sigma
 
 -- you might need to do in within the definition of the record type
 
-
-
 -- private
-
 
 record Monoid (A : Set) : Set where
   field
@@ -125,24 +122,27 @@ composeMH A B C MA MB MC g f =
         h a ·₃ h b
       ∎
 
--- forget-satisfies-id : (A : Set) →
---                       (M : Monoid A) →
---                       let id_forget = λ (x : forget-set A M) -> x in
---                       forget-func A A (identityMH A M) ≡ id_forget
--- forget-satisfies-id A M = refl
+forget-satisfies-id : (A : Set) →
+                      (M : Monoid A) →
+                      let id_forget = λ (x : forget-set (A , M)) -> x in
+                      forget-func A A M M (identityMH A M) ≡ id_forget
+forget-satisfies-id A M = refl
 
--- forget-satisfies-comp : (A : Set) →
---                         (B : Set) →
---                         (C : Set) →
---                         (g : MonoidHomomorphism B C) →
---                         (f : MonoidHomomorphism A B) →
---                         let monB₁ = MonoidHomomorphism.target f
---                             monB₂ = MonoidHomomorphism.source g
---                         in
---                         (prf : monB₁ ≡ monB₂) →
---                         let g∘f = composeMH A B C g f prf in
---                         forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
--- forget-satisfies-comp A B C g f prf = refl
+forget-satisfies-comp : (A : Set) →
+                        (B : Set) →
+                        (C : Set) →
+                        (MA : Monoid A) →
+                        (MB : Monoid B) →
+                        (MC : Monoid C) →
+                        (g : MonoidHomomorphism B C MB MC) →
+                        (f : MonoidHomomorphism A B MA MB) →
+                        let g∘f = composeMH A B C MA MB MC g f
+                            F₁ = forget-func A C MA MC
+                            F₂ = forget-func B C MB MC
+                            F₃ = forget-func A B MA MB
+                        in
+                        F₁ (g∘f) ≡ F₂ g ∘ F₃ f
+forget-satisfies-comp A B C MA MB MC g f = refl
 
 record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where 
   field
