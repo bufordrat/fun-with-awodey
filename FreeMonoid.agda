@@ -73,11 +73,11 @@ forget-set (A , _) = A
 
 forget-func : {A : Set} →
               {B : Set} →
-              (M : Monoid A) →
-              (N : Monoid B) →
+              {M : Monoid A} →
+              {N : Monoid B} →
               (f : MonoidHomomorphism M N) →
               A → B
-forget-func M N f = MonoidHomomorphism.h f
+forget-func f = MonoidHomomorphism.h f
 
 identityMH : {A : Set} → (M : Monoid A) → MonoidHomomorphism M M
 identityMH _ =
@@ -89,13 +89,13 @@ identityMH _ =
 composeMH : {A : Set} →
             {B : Set} →
             {C : Set} →
-            (MA : Monoid A) →
-            (MB : Monoid B) →
-            (MC : Monoid C) →
+            {MA : Monoid A} →
+            {MB : Monoid B} →
+            {MC : Monoid C} →
             (g : MonoidHomomorphism MB MC) →
             (f : MonoidHomomorphism MA MB) →
             MonoidHomomorphism MA MC
-composeMH {A} MA MB MC g f =
+composeMH {A} {_} {_} {MA} {MB} {MC} g f =
   record { h = h ;
            h-is-homo = h-is-homo
          }
@@ -125,24 +125,22 @@ composeMH {A} MA MB MC g f =
 forget-satisfies-id : {A : Set} →
                       (M : Monoid A) →
                       let id_forget = λ (x : forget-set (A , M)) -> x in
-                      forget-func M M (identityMH M) ≡ id_forget
+                      forget-func (identityMH M) ≡ id_forget
 forget-satisfies-id M = refl
 
 forget-satisfies-comp : {A : Set} →
                         {B : Set} →
                         {C : Set} →
-                        (MA : Monoid A) →
-                        (MB : Monoid B) →
-                        (MC : Monoid C) →
+                        {MA : Monoid A} →
+                        {MB : Monoid B} →
+                        {MC : Monoid C} →
                         (g : MonoidHomomorphism MB MC) →
                         (f : MonoidHomomorphism MA MB) →
-                        let g∘f = composeMH MA MB MC g f
-                            F₁ = forget-func MA MC
-                            F₂ = forget-func MB MC
-                            F₃ = forget-func MA MB
+                        let _∘ₘ_ = composeMH
+                            F = forget-func
                         in
-                        F₁ (g∘f) ≡ F₂ g ∘ F₃ f
-forget-satisfies-comp MA MB MC g f = refl
+                        F (g ∘ₘ f) ≡ F g ∘ F f
+forget-satisfies-comp g f = refl
 
 record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where 
   field
