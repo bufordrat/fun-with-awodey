@@ -4,7 +4,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq
 open Eq.≡-Reasoning
 open import Function
-open import Agda.Builtin.Sigma
+open import Data.Product
 
 -- there's a thing where you can make all those implicit foralls for
 -- one using "private" syntax; figure out how to do that
@@ -21,7 +21,9 @@ record Monoid (A : Set) : Set where
     left-id : ∀ (a : A) → 𝟙 · a ≡ a
     right-id : ∀ (a : A) → a · 𝟙 ≡ a
 
-record MonoidHomomorphism (A : Set) (B : Set) (M : Monoid A) (N : Monoid B) : Set where
+record MonoidHomomorphism
+       (A : Set) (B : Set) (M : Monoid A) (N : Monoid B)
+       : Set where
   field
     h : A -> B
   open Monoid M renaming (_·_ to _·ₘ_; 𝟙 to 𝟙ₛ)
@@ -79,12 +81,10 @@ forget-func A B M N f = MonoidHomomorphism.h f
 
 identityMH : (A : Set) → (M : Monoid A) → MonoidHomomorphism A A M M
 identityMH A Mon =
-  record { h = h ;
+  let identity = λ x → x in
+  record { h = identity ;
            h-is-homo = λ _ _ → refl
          }
-  where
-    h = λ x → x
-    _·_ = Monoid._·_ Mon
 
 composeMH : (A : Set) →
             (B : Set) →
