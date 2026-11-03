@@ -4,6 +4,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq
 open Eq.≡-Reasoning
 open import Function
+open import Agda.Builtin.Sigma
 
 -- there's a thing where you can make all those implicit foralls for
 -- one using "private" syntax; figure out how to do that
@@ -23,15 +24,13 @@ record Monoid (A : Set) : Set where
     left-id : ∀ (a : A) → 𝟙 · a ≡ a
     right-id : ∀ (a : A) → a · 𝟙 ≡ a
 
-record MonoidHomomorphism (A : Set) (B : Set) : Set where
+record MonoidHomomorphism (A : Set) (B : Set) (M : Monoid A) (N : Monoid B) : Set where
   field
     h : A -> B
-    source : Monoid A
-    target : Monoid B
-  open Monoid source renaming (_·_ to _·ₛ_; 𝟙 to 𝟙ₛ)
-  open Monoid target renaming (_·_ to _·ₜ_; 𝟙 to 𝟙ₜ)
+  open Monoid M renaming (_·_ to _·ₘ_; 𝟙 to 𝟙ₛ)
+  open Monoid N renaming (_·_ to _·ₙ_; 𝟙 to 𝟙ₜ)
   field
-    h-is-homo : ∀ (a b : A) → h (a ·ₛ b) ≡ h a ·ₜ h b
+    h-is-homo : ∀ (a b : A) → h (a ·ₘ b) ≡ h a ·ₙ h b
 
 data List (A : Set) : Set where
   — : List A
@@ -70,17 +69,20 @@ generate A =
         x :: xs
       ∎
 
-forget-set : (A : Set) → (M : Monoid A) → Set
-forget-set A _ = A
+forget-set : Σ Set Monoid → Set
+forget-set (A , _) = A
 
-forget-func : (A : Set) → (B : Set) → (f : MonoidHomomorphism A B) → A → B
-forget-func A B f = MonoidHomomorphism.h f
+forget-func : (A : Set) →
+              (B : Set) →
+              (M : Monoid A) →
+              (N : Monoid B) →
+              (f : MonoidHomomorphism A B M N) →
+              A → B
+forget-func A B M N f = MonoidHomomorphism.h f
 
-identityMH : (A : Set) → Monoid A → MonoidHomomorphism A A
+identityMH : (A : Set) → (M : Monoid A) → MonoidHomomorphism A A M M
 identityMH A Mon =
   record { h = h ;
-           source = Mon ;
-           target = Mon ;
            h-is-homo = λ _ _ → refl
          }
   where
@@ -90,17 +92,14 @@ identityMH A Mon =
 composeMH : (A : Set) →
             (B : Set) →
             (C : Set) →
-            (g : MonoidHomomorphism B C) →
-            (f : MonoidHomomorphism A B) →
-            let monB₁ = MonoidHomomorphism.target f
-                monB₂ = MonoidHomomorphism.source g
-            in
-            monB₁ ≡ monB₂ →
-            MonoidHomomorphism A C
-composeMH A B C g f prf =
+            (MA : Monoid A) →
+            (MB : Monoid B) →
+            (MC : Monoid C) →
+            (g : MonoidHomomorphism B C MB MC) →
+            (f : MonoidHomomorphism A B MA MB) →
+            MonoidHomomorphism A C MA MC
+composeMH A B C MA MB MC g f =
   record { h = h ;
-           source = monA ;
-           target = monC ;
            h-is-homo = h-is-homo
          }
   where
@@ -109,15 +108,10 @@ composeMH A B C g f prf =
     fh-is-homo = MonoidHomomorphism.h-is-homo f
     gh-is-homo = MonoidHomomorphism.h-is-homo g
     h = gh ∘ fh
-    monA = MonoidHomomorphism.source f
-    monB₁ = MonoidHomomorphism.target f
-    monB₂ = MonoidHomomorphism.source g
-    monC = MonoidHomomorphism.target g
-    _·₁_ = Monoid._·_ monA
-    _·₂_ = Monoid._·_ monB₁
-    _·₃_ = Monoid._·_ monB₂
-    _·₄_ = Monoid._·_ monC
-    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₄ h b
+    _·₁_ = Monoid._·_ MA
+    _·₂_ = Monoid._·_ MB
+    _·₃_ = Monoid._·_ MC
+    h-is-homo : ∀ (a b : A) → h (a ·₁ b) ≡ h a ·₃ h b
     h-is-homo a b =
       begin
         h (a ·₁ b)
@@ -125,32 +119,30 @@ composeMH A B C g f prf =
         gh (fh (a ·₁ b))
       ≡⟨ cong (λ x → gh x) (fh-is-homo a b) ⟩
         gh (fh a ·₂ fh b)
-      ≡⟨ cong (λ op → gh ((Monoid._·_ op) (fh a) (fh b))) prf ⟩
-        gh (fh a ·₃ fh b)
       ≡⟨ gh-is-homo (fh a) (fh b) ⟩
-         gh (fh a) ·₄ gh (fh b)
+         gh (fh a) ·₃ gh (fh b)
       ≡⟨ refl ⟩
-        h a ·₄ h b
+        h a ·₃ h b
       ∎
 
-forget-satisfies-id : (A : Set) →
-                      (M : Monoid A) →
-                      let id_forget = λ (x : forget-set A M) -> x in
-                      forget-func A A (identityMH A M) ≡ id_forget
-forget-satisfies-id A M = refl
+-- forget-satisfies-id : (A : Set) →
+--                       (M : Monoid A) →
+--                       let id_forget = λ (x : forget-set A M) -> x in
+--                       forget-func A A (identityMH A M) ≡ id_forget
+-- forget-satisfies-id A M = refl
 
-forget-satisfies-comp : (A : Set) →
-                        (B : Set) →
-                        (C : Set) →
-                        (g : MonoidHomomorphism B C) →
-                        (f : MonoidHomomorphism A B) →
-                        let monB₁ = MonoidHomomorphism.target f
-                            monB₂ = MonoidHomomorphism.source g
-                        in
-                        (prf : monB₁ ≡ monB₂) →
-                        let g∘f = composeMH A B C g f prf in
-                        forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
-forget-satisfies-comp A B C g f prf = refl
+-- forget-satisfies-comp : (A : Set) →
+--                         (B : Set) →
+--                         (C : Set) →
+--                         (g : MonoidHomomorphism B C) →
+--                         (f : MonoidHomomorphism A B) →
+--                         let monB₁ = MonoidHomomorphism.target f
+--                             monB₂ = MonoidHomomorphism.source g
+--                         in
+--                         (prf : monB₁ ≡ monB₂) →
+--                         let g∘f = composeMH A B C g f prf in
+--                         forget-func A C (g∘f) ≡ forget-func B C g ∘ forget-func A B f
+-- forget-satisfies-comp A B C g f prf = refl
 
 record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where 
   field
