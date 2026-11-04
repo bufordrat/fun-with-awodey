@@ -158,10 +158,18 @@ record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where
            (f : Arrow C D) → (g : Arrow B C) → (h : Arrow A B) →
            (f ∘ₘ g) ∘ₘ h ≡ f ∘ₘ (g ∘ₘ h)
 
-Mon-Arrow : {A B : Set} → {M : Monoid A} → {N : Monoid B} →
-            Σ Set Monoid → Σ Set Monoid →
-            Set
+Mon-Arrow : Σ Set Monoid → Σ Set Monoid → Set
 Mon-Arrow (_ , M) (_ , N) = MonoidHomomorphism M N
 
 Mon : Category (Σ Set Monoid) Mon-Arrow
-Mon = {!!}
+Mon = let open Monoid in
+      let Mon-Id : {O : Σ Set Monoid} → Mon-Arrow O O
+          Mon-Id {_ , M} = identityMH M
+      in
+      record { idₘ = Mon-Id ;
+               _∘ₘ_ = {!!} ;
+               left-id = {!!} ;
+               right-id = {!!} ;
+               comp = {!!}
+             }
+
