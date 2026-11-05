@@ -163,17 +163,17 @@ Mon-Arrow (_ , M) (_ , N) = MonoidHomomorphism M N
 
 Mon : Category (Σ Set Monoid) Mon-Arrow
 Mon = let open Monoid in
-      let Mon-Id : {O : Σ Set Monoid} → Mon-Arrow O O
-          Mon-Id {_ , M} = identityMH M
-          Mon-Comp : {O P Q : Σ Set Monoid} → Mon-Arrow P Q → Mon-Arrow O P → Set
-          Mon-Comp
-            (record { h = g ; h-is-homo = homo₁})
-            (record { h = f ; h-is-homo = homo₂}) = {!!} (g ∘ f)
+      let idM : {O : Σ Set Monoid} → Mon-Arrow O O
+          idM {_ , M} = identityMH M
+          compM : {O P Q : Σ Set Monoid} →
+                  Mon-Arrow P Q → Mon-Arrow O P → Mon-Arrow O Q
+          compM (record { h = g ; h-is-homo = homo₁ })
+                (record { h = f ; h-is-homo = homo₂ }) =
+                record { h = g ∘ f ; h-is-homo = {!!} }
       in
-      record { idₘ = Mon-Id ;
+      record { idₘ = idM ;
                _∘ₘ_ = {!!} ;
                left-id = {!!} ;
                right-id = {!!} ;
                comp = {!!}
              }
-
