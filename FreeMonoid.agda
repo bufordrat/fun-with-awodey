@@ -165,6 +165,10 @@ Mon : Category (Σ Set Monoid) Mon-Arrow
 Mon = let open Monoid in
       let Mon-Id : {O : Σ Set Monoid} → Mon-Arrow O O
           Mon-Id {_ , M} = identityMH M
+          Mon-Comp : {O P Q : Σ Set Monoid} → Mon-Arrow P Q → Mon-Arrow O P → Set
+          Mon-Comp
+            (record { h = g ; h-is-homo = homo₁})
+            (record { h = f ; h-is-homo = homo₂}) = {!!} (g ∘ f)
       in
       record { idₘ = Mon-Id ;
                _∘ₘ_ = {!!} ;
