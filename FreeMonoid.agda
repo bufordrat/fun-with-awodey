@@ -161,18 +161,23 @@ record Category (Obj : Set₁) (Arrow : Obj → Obj → Set₀) : Set₁ where
 Mon-Arrow : Σ Set Monoid → Σ Set Monoid → Set
 Mon-Arrow (_ , M) (_ , N) = MonoidHomomorphism M N
 
+MHs-are-identical : (A : Set)
+                    (B : Set)
+                    (M : Monoid A) →
+                    (N : Monoid B) →
+                    (f : MonoidHomomorphism M N) →
+                    (g : MonoidHomomorphism M N) →
+                    MonoidHomomorphism.h f ≡ MonoidHomomorphism.h g →
+                    f ≡ g
+MHs-are-identical = {!!}
+
 Mon : Category (Σ Set Monoid) Mon-Arrow
 Mon = let open Monoid in
       let idM : {O : Σ Set Monoid} → Mon-Arrow O O
           idM {_ , M} = identityMH M
-          compM : {O P Q : Σ Set Monoid} →
-                  Mon-Arrow P Q → Mon-Arrow O P → Mon-Arrow O Q
-          compM (record { h = g ; h-is-homo = homo₁ })
-                (record { h = f ; h-is-homo = homo₂ }) =
-                record { h = g ∘ f ; h-is-homo = {!!} }
       in
       record { idₘ = idM ;
-               _∘ₘ_ = {!!} ;
+               _∘ₘ_ = composeMH ;
                left-id = {!!} ;
                right-id = {!!} ;
                comp = {!!}
